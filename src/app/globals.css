@@ -1,0 +1,68 @@
+@import "tailwindcss";
+:root {
+  --color-primary: #fafafa;
+  --color-secondary: #181617;
+  --color-primary-rgb: 250, 250, 250;
+  --color-secondary-rgb: 24, 22, 23;
+}
+@theme inline {
+  --font-sans: var(--font-barlow);
+  --font-mono: var(--font-roboto-mono);
+}
+.text-base-light {
+  color: var(--color-primary) !important;
+}
+.text-base-dark {
+  color: var(--color-secondary) !important;
+}
+.bg-base-light {
+  background-color: var(--color-primary) !important;
+}
+.bg-base-dark {
+  background-color: var(--color-secondary) !important;
+}
+.bg-base-dark-opacity {
+  background-color: rgba(var(--color-secondary-rgb), 0.9) !important;
+}
+
+.text-base-white-opacity {
+  color: rgba(var(--color-primary-rgb), 0.7) !important;
+}
+
+.bg-gradient-dark-to-transparent {
+  background: linear-gradient(
+    to bottom,
+    var(--color-secondary) 90%,
+    transparent 100%
+  ) !important;
+}
+
+.bg-fucking-cool-yellow {
+  background: #ffd901 !important;
+}
+
+.text-fucking-cool-yellow {
+  color: #ffd901 !important;
+}
+
+/* HIDDEN SCROLL */
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  cursor: default;
+}
+
+/* FUCKING COOL WARNING */
+.exclamation-mark {
+  transform: rotate(0deg);
+  transition: all 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.exclamation-mark.active {
+  transform: rotate(180deg);
+  transition: all 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+}

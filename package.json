@@ -1,0 +1,40 @@
+{
+  "name": "dev-challenge-2025",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "basehub dev & next dev",
+    "build": "basehub && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "tsx src/scripts/test-schema.ts"
+  },
+  "dependencies": {
+    "@gsap/react": "^2.1.2",
+    "@phosphor-icons/react": "^2.1.7",
+    "basehub": "^8.1.30",
+    "gsap": "^3.12.7",
+    "i18n-iso-countries": "^7.14.0",
+    "lenis": "^1.2.3",
+    "motion": "^12.6.2",
+    "next": "15.2.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.55.0",
+    "swr": "^2.3.3",
+    "zod": "^3.24.2",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.2.4",
+    "tailwindcss": "^4",
+    "tsx": "^4.19.3",
+    "typescript": "^5"
+  },
+  "packageManager": "pnpm@7.33.5+sha512.4e499f22fffe5845aa8f9463e1386b2d72c3134e0ebef9409360ad844fef0290e82b479b32eb2ec0f30e56607e1820c22167829fd62656d41a8fd0cc4a0f4267"
+}
