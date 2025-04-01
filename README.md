@@ -1,4 +1,4 @@
-# <img src="./public/icon.png" alt="JOYCO Logo" height="36" width="36" align="top" />&nbsp;&nbsp;JOYCO Dev Challenge
+# <img src="./public/icon.png" alt="JOYCO Logo" height="36" width="36" align="top" />&nbsp;&nbsp;JOYCO Dev Challenge feat Alejo Pequeño
 
 ![banner.png](./public/banner.png)
 
@@ -30,7 +30,7 @@ What we’re looking for:
 - 🔍 **Pixel-perfect** design match
 - 📱 **Responsive layouts** for mobile, tablet, and desktop
 - 🖼️ **Retina-ready images** (2x)
-- 🎭 **Custom interactions or animations**  
+- 🎭 **Custom interactions or animations**
   (Framer Motion, GSAP — up to you)
 
 ---
@@ -70,8 +70,8 @@ Use whatever stack makes you shine. That said, we vibe with:
 
 This isn’t just a test — it’s a chance to show your taste, your thinking, and your love for clean, creative frontend.
 
-Make it smart. Make it smooth.  
+Make it smart. Make it smooth.
 And above all… **make it yours.**
 
-**Have fun.**  
+**Have fun.**
 Made by rebels.
