@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CountryOption } from "@/lib/schemas/submission";
 import { MagnifyingGlass } from "@phosphor-icons/react";
 import { useCursorStore } from "@/store/cursorStore";
+import { useLenis } from "lenis/react";
 
 interface CustomCountryDropdownProps {
   options: CountryOption[];
@@ -23,12 +24,26 @@ const CustomCountryDropdown = ({
   const [isHovered, setIsHovered] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const optionsListRef = useRef<HTMLDivElement>(null);
+  const lenis = useLenis();
 
   const selectedOption = options.find((option) => option.code === value);
 
   const filteredOptions = options.filter((option) =>
     option.label.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  useEffect(() => {
+    if (isOpen && optionsListRef.current) {
+      optionsListRef.current.setAttribute("data-lenis-prevent", "");
+    }
+
+    return () => {
+      if (optionsListRef.current) {
+        optionsListRef.current.removeAttribute("data-lenis-prevent");
+      }
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -54,6 +69,23 @@ const CustomCountryDropdown = ({
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    if (isOpen && optionsListRef.current && selectedOption) {
+      const selectedElement = optionsListRef.current.querySelector(
+        `[data-code="${selectedOption.code}"]`
+      ) as HTMLElement;
+
+      if (selectedElement) {
+        setTimeout(() => {
+          selectedElement.scrollIntoView({
+            block: "nearest",
+            behavior: "auto",
+          });
+        }, 100);
+      }
+    }
+  }, [isOpen, selectedOption]);
+
   const handleToggleDropdown = () => {
     setIsOpen(!isOpen);
     if (!isOpen) {
@@ -68,10 +100,88 @@ const CustomCountryDropdown = ({
     setIsHovered(false);
   };
 
+  useEffect(() => {
+    if (lenis && isOpen) {
+      const originalPrevent = lenis.options.prevent;
+
+      const newPrevent = (node: HTMLElement) => {
+        if (
+          optionsListRef.current &&
+          (node === optionsListRef.current ||
+            optionsListRef.current.contains(node) ||
+            node.hasAttribute("data-lenis-prevent"))
+        ) {
+          return true;
+        }
+
+        return originalPrevent ? originalPrevent(node) : false;
+      };
+
+      lenis.options.prevent = newPrevent;
+
+      return () => {
+        if (lenis) {
+          lenis.options.prevent = originalPrevent;
+        }
+      };
+    }
+  }, [lenis, isOpen]);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!isOpen) return;
+
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+
+      if (filteredOptions.length > 0) {
+        const currentIndex = filteredOptions.findIndex((o) => o.code === value);
+        let nextIndex = currentIndex;
+
+        if (e.key === "ArrowDown") {
+          nextIndex =
+            currentIndex < filteredOptions.length - 1 ? currentIndex + 1 : 0;
+        } else {
+          nextIndex =
+            currentIndex > 0 ? currentIndex - 1 : filteredOptions.length - 1;
+        }
+
+        const nextOption = filteredOptions[nextIndex];
+        if (nextOption) {
+          handleOptionSelect(nextOption.code);
+
+          setTimeout(() => {
+            setIsOpen(true);
+
+            if (optionsListRef.current) {
+              const selectedElement = optionsListRef.current.querySelector(
+                `[data-code="${nextOption.code}"]`
+              ) as HTMLElement;
+
+              if (selectedElement) {
+                selectedElement.scrollIntoView({
+                  block: "nearest",
+                  behavior: "auto",
+                });
+              }
+            }
+          }, 10);
+        }
+      }
+    } else if (e.key === "Enter" && value) {
+      handleOptionSelect(value);
+    } else if (e.key === "Escape") {
+      setIsOpen(false);
+    }
+  };
+
   const { setDefault, setHovered } = useCursorStore();
 
   return (
-    <div className="relative w-full flex" ref={dropdownRef}>
+    <div
+      className="relative w-full flex"
+      ref={dropdownRef}
+      onKeyDown={handleKeyDown}
+    >
       <motion.div
         onMouseEnter={setHovered}
         onMouseLeave={setDefault}
@@ -103,7 +213,7 @@ const CustomCountryDropdown = ({
           },
         }}
         onClick={handleToggleDropdown}
-        className="w-full rounded-md border overflow-hidden rounded-r-md focus:outline-none cursor-pointer flex items-center"
+        className="w-full rounded-md border overflow-hidden focus:outline-none cursor-pointer flex items-center"
       >
         <div className="flex items-center justify-center p-3">
           <span
@@ -114,6 +224,7 @@ const CustomCountryDropdown = ({
             {selectedOption?.code?.toUpperCase() || "XXX"}
           </span>
         </div>
+
         <motion.div
           initial={{
             borderColor: error ? "#FF0000" : isOpen ? "#ffffff" : "#374151",
@@ -132,6 +243,7 @@ const CustomCountryDropdown = ({
           }}
           className="h-full border-[0.5px]"
         ></motion.div>
+
         <div className="flex justify-between gap-5 items-center grow p-3 overflow-hidden">
           <span
             className={`${value ? "text-white" : "text-gray-500"} truncate`}
@@ -172,36 +284,50 @@ const CustomCountryDropdown = ({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.2 }}
-            className="absolute z-10 left-0 w-full bg-base-dark mt-1 top-full border border-white rounded-md shadow-lg max-h-60 overflow-hidden flex flex-col"
+            className="absolute overflow-hidden z-10 left-0 w-full bg-base-dark mt-1 top-full border border-white rounded-md shadow-lg max-h-80 flex flex-col"
           >
-            <div className="sticky top-0 p-2 bg-base-dark border-b border-white">
+            <div className="sticky top-0 p-2 bg-base-dark border-b border-white z-10">
               <div className="relative flex items-center p-2 gap-4">
-                <label htmlFor="">
+                <label htmlFor="country-search">
                   <MagnifyingGlass
                     className="h-4 w-4 text-gray-500"
                     weight="bold"
                   />
                 </label>
                 <input
+                  id="country-search"
                   ref={inputRef}
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="SEARCH COUNTRY..."
                   className="w-full bg-transparent pr-4 focus:outline-none placeholder:text-gray-500 placeholder:font-mono text-white font-mono"
+                  data-lenis-prevent
                 />
               </div>
             </div>
 
-            <div className="overflow-y-auto p-2 flex flex-col gap-2">
+            <div
+              ref={optionsListRef}
+              data-lenis-prevent
+              className="overflow-y-auto p-2 flex flex-col gap-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent"
+              style={{
+                maxHeight: "240px",
+                scrollBehavior: "auto",
+                overscrollBehavior: "contain",
+              }}
+            >
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((option) => (
-                  <div
+                  <motion.div
                     key={option.code}
+                    data-code={option.code}
                     onClick={() => handleOptionSelect(option.code)}
                     className={`p-3 border border-transparent hover:border-white hover:text-white cursor-pointer transition-all duration-200 text-gray-500 rounded-xl flex items-center ${
                       value === option.code ? "bg-gray-700 text-white" : ""
                     }`}
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ duration: 0.1 }}
                   >
                     <span className="font-mono mr-2 flex-shrink-0">
                       {option.code.toUpperCase()}
@@ -209,7 +335,7 @@ const CustomCountryDropdown = ({
                     <span className="truncate w-full">
                       {option.label.toUpperCase()}
                     </span>
-                  </div>
+                  </motion.div>
                 ))
               ) : (
                 <div className="p-3 text-gray-400 text-center">

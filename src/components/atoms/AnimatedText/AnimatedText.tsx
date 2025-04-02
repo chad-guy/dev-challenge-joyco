@@ -55,11 +55,9 @@ const AnimatedText = ({
   const Element = element;
   const paragraphClass = `${colorClasses[color]} ${sizeClasses[size]} ${variantClasses[variant]} ${weightClasses[weight]} ${opacityClasses[opacity]}`;
 
-  // Split text into individual characters
   const text = children?.toString() || "";
   const characters = text.split("");
 
-  // Animation variants
   const containerVariants = {
     hidden: {},
     visible: {
@@ -114,7 +112,7 @@ const AnimatedText = ({
           delay: i * 0.04,
           duration: 0.3,
           ease: "easeInOut",
-          type: "tween", // Tipo tween para animación lineal
+          type: "tween",
         },
       }),
     },

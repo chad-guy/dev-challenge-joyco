@@ -86,7 +86,7 @@ export default function JoycoReferenceForm() {
         clearErrors("email");
       }
     } catch (error) {
-      console.error("Error en la validación:", error);
+      console.error("Error in validation:", error);
       isValid = false;
     }
 
@@ -100,7 +100,7 @@ export default function JoycoReferenceForm() {
     setFileError("");
 
     if (attachments.length + files.length > MAX_ATTACHMENTS) {
-      setFileError(`Máximo de ${MAX_ATTACHMENTS} archivos permitidos`);
+      setFileError(`Maximum of ${MAX_ATTACHMENTS} files allowed`);
       return;
     }
 
@@ -111,13 +111,13 @@ export default function JoycoReferenceForm() {
         )
       ) {
         setFileError(
-          "Tipo de archivo inválido. Solo se permiten archivos JPEG, PNG, GIF, WebP y SVG"
+          "Invalid file type. Only JPEG, PNG, GIF, WebP and SVG files are allowed"
         );
         return false;
       }
 
       if (file.size > MAX_FILE_SIZE) {
-        setFileError("El tamaño del archivo debe ser menor a 5MB");
+        setFileError("File size must be less than 5MB");
         return false;
       }
 
@@ -125,10 +125,24 @@ export default function JoycoReferenceForm() {
     });
 
     setAttachments((prev) => [...prev, ...validFiles]);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const removeAttachment = (index: number) => {
-    setAttachments((prev) => prev.filter((_, i) => i !== index));
+    setAttachments((prev) => {
+      const newAttachments = prev.filter((_, i) => i !== index);
+
+      if (fileError) setFileError("");
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+
+      return newAttachments;
+    });
   };
 
   const onSubmit = async (data: FormInputs) => {
@@ -137,7 +151,7 @@ export default function JoycoReferenceForm() {
     }
 
     if (attachments.length === 0) {
-      setFileError("Se requiere al menos un archivo adjunto");
+      setFileError("At least one file attachment is required");
       return;
     }
 
@@ -159,7 +173,7 @@ export default function JoycoReferenceForm() {
       });
 
       if (!response.ok) {
-        throw new Error("Falló el envío");
+        throw new Error("Submission failed");
       }
 
       setIsSubmitSuccess(true);
@@ -167,14 +181,18 @@ export default function JoycoReferenceForm() {
       reset();
       setAttachments([]);
 
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+
       setTimeout(() => {
         setIsSubmitSuccess(false);
       }, 5000);
     } catch (error) {
-      console.error("Error al enviar el formulario:", error);
+      console.error("Error submitting form:", error);
       setError("email", {
         type: "manual",
-        message: "Falló el envío. Por favor intenta de nuevo.",
+        message: "Submission failed. Please try again.",
       });
     }
   };
@@ -191,6 +209,13 @@ export default function JoycoReferenceForm() {
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+  };
+
+  const handleAddFiles = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+      fileInputRef.current.click();
+    }
   };
 
   const handleCountryChange = (value: string) => {
@@ -210,7 +235,6 @@ export default function JoycoReferenceForm() {
         SUBMIT YOUR JOYCO REFERENCE
       </Text>
 
-      {/* Mensaje de éxito */}
       <AnimatePresence>
         {isSubmitSuccess && (
           <motion.div
@@ -221,7 +245,8 @@ export default function JoycoReferenceForm() {
           >
             <CheckCircle size={30} className="text-white" weight="fill" />
             <Text color="white" variant="mono" weight="600">
-              SUCCESSFUL SHIPMENT! WE WILL VALIDATE YOUR REFERENCE IN 1-2 DAYS.
+              SUCCESSFUL SUBMISSION! WE WILL VALIDATE YOUR REFERENCE IN 1-2
+              DAYS.
             </Text>
           </motion.div>
         )}
@@ -229,7 +254,6 @@ export default function JoycoReferenceForm() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="pt-8">
         <div className="grid grid-cols-2 gap-8">
-          {/* Uploaded By */}
           <div className="space-y-2">
             <Text color="white" variant="mono">
               <label className="block uppercase text-sm font-medium opacity-80">
@@ -323,7 +347,6 @@ export default function JoycoReferenceForm() {
           </div>
         </div>
 
-        {/* Email */}
         <div className="space-y-2 pt-2">
           <Text color="white" variant="mono">
             <label className="block uppercase text-sm font-medium opacity-80">
@@ -382,7 +405,6 @@ export default function JoycoReferenceForm() {
           </AnimatePresence>
         </div>
 
-        {/* File Upload */}
         <div className="space-y-4">
           <div className="text-center">
             <div className="flex gap-2 md:gap-5 items-center justify-between">
@@ -396,6 +418,15 @@ export default function JoycoReferenceForm() {
               </Text>
               <div className="grow h-[1px] border-t border-dashed border-white/20"></div>
             </div>
+
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              multiple
+              accept={VALID_IMAGE_TYPES.join(",")}
+              className="hidden"
+            />
 
             {attachments.length > 0 ? (
               <motion.div
@@ -449,7 +480,7 @@ export default function JoycoReferenceForm() {
                   {attachments.length < MAX_ATTACHMENTS && (
                     <button
                       type="button"
-                      onClick={() => fileInputRef.current?.click()}
+                      onClick={handleAddFiles}
                       className="w-32 h-32 flex items-center justify-center border border-dashed border-gray-600 rounded-md transition-all duration-200 hover:bg-gray-800"
                     >
                       <Plus size={24} className="text-gray-400" weight="bold" />
@@ -484,7 +515,7 @@ export default function JoycoReferenceForm() {
                 onMouseEnter={setHovered}
                 onMouseLeave={setDefault}
                 className="backdrop-blur-lg p-4 py-10 lg:py-16 mb-4 rounded-md border flex items-center justify-center cursor-pointer bg-base-dark-opacity"
-                onClick={() => fileInputRef.current?.click()}
+                onClick={handleAddFiles}
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
               >
@@ -497,15 +528,6 @@ export default function JoycoReferenceForm() {
               </motion.div>
             )}
 
-            {/* Hidden file input */}
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              multiple
-              accept={VALID_IMAGE_TYPES.join(",")}
-              className="hidden"
-            />
             <AnimatePresence>
               {fileError && (
                 <motion.p
@@ -527,7 +549,6 @@ export default function JoycoReferenceForm() {
           </div>
         </div>
 
-        {/* Submission notice */}
         <div className="flex items-center justify-between pt-4 gap-4">
           <Text
             color="white"
