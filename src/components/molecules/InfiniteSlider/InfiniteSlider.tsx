@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 import { useCursorStore } from "@/store/cursorStore";
+import { motion } from "motion/react";
 
 type TweenRefType = gsap.core.Tween | null;
 
@@ -87,7 +88,12 @@ const InfiniteSlider = () => {
   };
 
   return (
-    <section
+    <motion.section
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{
+        duration: 1,
+      }}
       className="fixed -left-[20vw] -bottom-[10vw] w-[300vw] rotate-[22deg] flex items-center gap-5 sm:-bottom-[20vw] md:-bottom-[30vh] lg:z-20 lg:-bottom-[35vw] cursor-default overflow-visible"
       onMouseEnter={onMouseEnterSlider}
       onMouseLeave={onMouseLeaveSlider}
@@ -156,7 +162,7 @@ const InfiniteSlider = () => {
           </div>
         ))}
       </div>
-    </section>
+    </motion.section>
   );
 };
 

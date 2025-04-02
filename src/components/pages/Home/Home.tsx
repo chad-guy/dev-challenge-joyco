@@ -1,5 +1,5 @@
 "use client";
-import { CustomCursor, Text } from "@/components/atoms";
+import { CustomCursor } from "@/components/atoms";
 import { ImagesColumn } from "@/components/organisms";
 import { useState } from "react";
 import { ReactLenis } from "lenis/react";
@@ -8,6 +8,7 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { useInPlaces } from "@/hooks/useInPlaces";
 import { useGroupedImages } from "@/hooks/useGroupedImages";
 import { Footer } from "@/components/templates";
+import { AnimatedText } from "@/components/atoms/AnimatedText";
 
 export default function HomePage() {
   const [hoveredImage, setHoveredImage] = useState<string | null>(null);
@@ -48,44 +49,58 @@ export default function HomePage() {
         <div className="min-h-screen relative lg:flex lg:gap-5">
           {/* HERO */}
           <div className="sticky z-10 top-0 pb-6 w-full bg-gradient-dark-to-transparent p-5 lg:w-1/2">
-            <div className="w-fit lg:fixed lg:p-5">
-              <Text
-                color="white"
-                element="p"
-                size="xs"
-                weight="500"
-                variant="mono"
-                className="ml-10 md:!text-sm lg:!text-base"
-              >
-                ALL AROUND THE WORLD
-              </Text>
-              <Text
-                color="white"
-                element="h1"
-                weight="700"
-                className="w-full text-[29.5vw] lg:text-[10vw] leading-[0.8] tracking-tight text-end"
-              >
-                JOYCO IN
-              </Text>
-              <Text
-                color="white"
-                element="h1"
-                weight="700"
-                className="w-full text-[29.5vw] lg:text-[10vw] leading-[0.8] tracking-tight text-end"
-              >
-                PLACES
-              </Text>
-              <Text
-                color="white"
-                opacity={50}
-                element="p"
-                size="xs"
-                weight="500"
-                variant="mono"
-                className="text-end mt-2 md:!text-sm lg:!text-base"
-              >
-                REBELS, EVERYWHERE
-              </Text>
+            <div className="w-fit lg:w-full flex justify-start lg:p-5">
+              <div className="w-fit lg:fixed lg:flex lg:flex-col">
+                <AnimatedText
+                  animation="default"
+                  staggerChildren={0.01}
+                  delayChildren={0.2}
+                  color="white"
+                  element="p"
+                  size="xs"
+                  weight="500"
+                  variant="mono"
+                  className="ml-10 md:!text-sm lg:!text-base"
+                >
+                  ALL AROUND THE WORLD
+                </AnimatedText>
+                <AnimatedText
+                  animation="default"
+                  staggerChildren={0.02}
+                  delayChildren={0.2}
+                  color="white"
+                  size="lg"
+                  weight="700"
+                  className=" text-[29.5vw] lg:text-[10vw] leading-[0.8] tracking-tight text-end"
+                >
+                  JOYCO IN
+                </AnimatedText>
+                <AnimatedText
+                  animation="default"
+                  staggerChildren={0.02}
+                  delayChildren={0.2}
+                  color="white"
+                  size="lg"
+                  weight="700"
+                  className=" text-[29.5vw] lg:text-[10vw] leading-[0.8] tracking-tight text-end"
+                >
+                  PLACES
+                </AnimatedText>
+                <AnimatedText
+                  animation="default"
+                  staggerChildren={0.01}
+                  delayChildren={0.2}
+                  color="white"
+                  opacity={50}
+                  element="p"
+                  size="xs"
+                  weight="500"
+                  variant="mono"
+                  className="text-end mt-2 md:!text-sm lg:!text-base"
+                >
+                  REBELS, EVERYWHERE
+                </AnimatedText>
+              </div>
             </div>
           </div>
           {/* PHOTOS */}
