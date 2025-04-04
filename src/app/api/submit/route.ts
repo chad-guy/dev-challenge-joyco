@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { validateSubmission } from "@/lib/schemas/submission";
 import { basehub } from "basehub";
 import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
 
 export async function POST(request: NextRequest) {
   try {
@@ -172,6 +173,8 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    revalidatePath("/");
 
     return NextResponse.json(
       {

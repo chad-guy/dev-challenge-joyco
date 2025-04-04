@@ -5,32 +5,44 @@ import { useState } from "react";
 import { ReactLenis } from "lenis/react";
 import { InfiniteSlider } from "@/components/molecules";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import { useInPlaces } from "@/hooks/useInPlaces";
 import { useGroupedImages } from "@/hooks/useGroupedImages";
 import { Footer } from "@/components/templates";
 import { AnimatedText } from "@/components/atoms/AnimatedText";
 
-export default function HomePage() {
+interface InPlacesData {
+  collections: {
+    inPlaces: {
+      _id: string;
+      _sys: { title: string };
+      items: Array<{
+        _id: string;
+        _sys: { title: string; slug: string };
+        image: {
+          url: string;
+          width: number;
+          height: number;
+          alt: string;
+          fileName: string;
+        };
+        uploadedBy: {
+          _id: string;
+          _sys: { title: string };
+          email: string;
+          country: string;
+        };
+      }>;
+    };
+  };
+}
+
+interface HomePageProps {
+  data: InPlacesData;
+}
+
+export default function HomePage({ data }: HomePageProps) {
   const [hoveredImage, setHoveredImage] = useState<string | null>(null);
   const isMobile = useIsMobile();
-  const { data, loading, error } = useInPlaces();
   const imagesInPlaces = data?.collections.inPlaces.items;
-  async function fetchProfiles() {
-    try {
-      const response = await fetch("/api/profile");
-
-      if (!response.ok) {
-        throw new Error("Error en la respuesta de la API");
-      }
-
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error al obtener los perfiles:", error);
-      throw error;
-    }
-  }
-  console.log("FetchProfiles", fetchProfiles);
 
   const imageGroups = useGroupedImages(imagesInPlaces, isMobile);
 
@@ -104,31 +116,29 @@ export default function HomePage() {
             </div>
           </div>
           {/* PHOTOS */}
-          {!loading && !error && (
-            <div className="flex gap-5 h-auto p-5 pt-0 lg:pt-5 lg:w-1/2 relative">
-              <ImagesColumn
-                images={imageGroups[0] || []}
-                hoveredImage={hoveredImage}
-                onImageHover={handleImageHover}
-                onImageHoverEnd={handleImageHoverEnd}
-                className="grow"
-              />
-              <ImagesColumn
-                images={imageGroups[1] || []}
-                hoveredImage={hoveredImage}
-                onImageHover={handleImageHover}
-                onImageHoverEnd={handleImageHoverEnd}
-                className="grow"
-              />
-              <ImagesColumn
-                images={imageGroups[2] || []}
-                hoveredImage={hoveredImage}
-                onImageHover={handleImageHover}
-                onImageHoverEnd={handleImageHoverEnd}
-                className="hidden md:block md:grow"
-              />
-            </div>
-          )}
+          <div className="flex gap-5 h-auto p-5 pt-0 lg:pt-5 lg:w-1/2 relative">
+            <ImagesColumn
+              images={imageGroups[0] || []}
+              hoveredImage={hoveredImage}
+              onImageHover={handleImageHover}
+              onImageHoverEnd={handleImageHoverEnd}
+              className="grow"
+            />
+            <ImagesColumn
+              images={imageGroups[1] || []}
+              hoveredImage={hoveredImage}
+              onImageHover={handleImageHover}
+              onImageHoverEnd={handleImageHoverEnd}
+              className="grow"
+            />
+            <ImagesColumn
+              images={imageGroups[2] || []}
+              hoveredImage={hoveredImage}
+              onImageHover={handleImageHover}
+              onImageHoverEnd={handleImageHoverEnd}
+              className="hidden md:block md:grow"
+            />
+          </div>
         </div>
         {/* FUCKING COOL WARNING */}
         <InfiniteSlider />

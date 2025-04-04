@@ -34,15 +34,23 @@ const fetcher = async (url: string) => {
   return res.json();
 };
 
-export function useInPlaces() {
-  const { data, error, isLoading } = useSWR<InPlacesData>(
+export function useInPlaces(initialData?: InPlacesData) {
+  const { data, error, isLoading, mutate } = useSWR<InPlacesData>(
     "/api/inplaces",
-    fetcher
+    fetcher,
+    {
+      fallbackData: initialData,
+      revalidateOnFocus: true,
+      revalidateIfStale: true,
+      revalidateOnMount: true,
+      dedupingInterval: 5000,
+    }
   );
 
   return {
     data,
     loading: isLoading,
     error,
+    refresh: () => mutate(),
   };
 }
