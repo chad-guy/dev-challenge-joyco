@@ -1,23 +1,17 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CountryOption } from "@/lib/schemas/submission";
 import { MagnifyingGlass } from "@phosphor-icons/react";
 import { useCursorStore } from "@/store/cursorStore";
 import { useLenis } from "lenis/react";
-
-interface CustomCountryDropdownProps {
-  options: CountryOption[];
-  value: string;
-  onChangeAction: (value: string) => void;
-  error?: string;
-}
+import { CustomCountryDropdownProps } from "./CustomCountryDropdown.types";
 
 const CustomCountryDropdown = ({
   options,
   value,
   onChangeAction,
   error,
+  disabled,
 }: CustomCountryDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -278,7 +272,7 @@ const CustomCountryDropdown = ({
       </motion.div>
 
       <AnimatePresence>
-        {isOpen && (
+        {isOpen && !disabled && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9, transformOrigin: "top" }}
             animate={{ opacity: 1, scale: 1 }}

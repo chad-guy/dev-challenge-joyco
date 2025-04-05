@@ -1,9 +1,9 @@
 import { CountryOption } from "@/lib/schemas/submission";
 
-export interface CustomSelectProps {
+export interface CustomCountryDropdownProps {
   options: CountryOption[];
   value: string;
-  onChange: (value: string) => void;
-  placeholder: string;
+  onChangeAction: (value: string) => void;
   error?: string;
+  disabled?: boolean;
 }

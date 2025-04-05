@@ -1,4 +1,4 @@
-import { InPlacesData } from "@/hooks/useInPlaces";
+import { InPlacesData } from "@/lib/api";
 
 export interface HomePageProps {
   initialData?: InPlacesData;
