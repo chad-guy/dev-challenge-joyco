@@ -135,7 +135,7 @@ const AnimatedText = ({
       className={`${paragraphClass} uppercase ${className} inline-block overflow-hidden`}
     >
       <motion.span
-        className="inline-block"
+        className="inline-block text-nowrap"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
